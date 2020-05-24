@@ -4,7 +4,7 @@ import * as Yup from 'yup';
 
 class RepositoryController {
   async index(req, res) {
-    // const { tag = '' } = req.params;
+    // const { tag = '' } = req.query;
     const repository = await Repository.findAll({
       where: {
         tags: [([Op.iLike] = '%api')],
