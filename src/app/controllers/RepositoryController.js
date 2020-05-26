@@ -4,16 +4,22 @@ import * as Yup from 'yup';
 
 class RepositoryController {
   async index(req, res) {
-    // const { tag = '' } = req.query;
+    const { tag } = req.query;
+
+    if (!tag) {
+      const repository = await Repository.findAll();
+      return res.json(repository);
+    }
+
     const repository = await Repository.findAll({
       where: {
-        tags: [([Op.iLike] = '%api')],
+        tags: {
+          [Op.overlap]: ['' + tag],
+        },
       },
     });
 
-    return res.json({
-      repository,
-    });
+    return res.json(repository);
   }
 
   //Create Repository
@@ -40,6 +46,19 @@ class RepositoryController {
       description,
       tags,
     });
+  }
+
+  //Delete Repository
+  async delete(req, res) {
+    const { id } = req.params;
+
+    await Repository.destroy({
+      where: {
+        id: id,
+      },
+    });
+
+    return res.status(204).send();
   }
 }
 
